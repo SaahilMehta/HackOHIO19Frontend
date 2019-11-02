@@ -12,10 +12,12 @@ dependencies:
   http: ^0.12.0+1
   json_serializable: ^2.0.2
   font_awesome_flutter: ^8.5.0
+  permissions_plugin: ^1.1.4
 
 dev_dependencies:
   pedantic: ^1.4.0
   build_runner: ^1.2.7
+
   
 flutter:
   uses-material-design: true

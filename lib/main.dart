@@ -19,7 +19,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'map_markers.dart';
+
 
 
 void main() => runApp(MyApp());
@@ -30,6 +30,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  AppState appState = AppState();
   GoogleMapController mapController;
   final LatLng _center = const LatLng(45.521563, -122.677433);
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
@@ -38,6 +39,7 @@ class _MyAppState extends State<MyApp> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+   
   }
 
   void _addMarker() {
@@ -84,30 +86,64 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Maps Sample App'),
+          title: Text('Pin App'),
           backgroundColor: Colors.green[700],
         ),
         body: Stack(
           children: [
-          GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 11.0,
-          ),
-          markers: Set<Marker>.of(markers.values),
-        ),
-          Positioned(
-            top: 40,
-            right: 20,
-            child: FlatButton(
-              child: Text('add'),
-              onPressed: _addMarker,
+            GoogleMap(
+            onMapCreated: _onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: _center,
+              zoom: 11.0,
             ),
-          )
+            markers: Set<Marker>.of(markers.values),
+          ),
         ]
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _addMarker,
+          tooltip: 'Drop pin',
+          child: const Icon(Icons.add),
+        ),
+
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              Container(
+                height: 80.0,
+                child:DrawerHeader(
+                  child: Text('Options',),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                  ),
+                  // margin: EdgeInsets.all(0),
+                ),
+              ),
+              
+              ListTile(
+                title: Text('Select Categories'),
+                onTap: () {
+                  // Close drawer
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Top Pins'),
+                onTap: () {
+
+                  Navigator.pop(context);
+                },
+              )
+            ]
+          )
+        ),
       ),
-      )
     );
   }
 }
+
+ class AppState {
+
+  }
