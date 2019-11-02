@@ -17,6 +17,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -25,22 +26,26 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  AppState appState = AppState();
   GoogleMapController mapController;
 
   final LatLng _center = const LatLng(45.521563, -122.677433);
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+   
   }
 
+int _count = 0;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Maps Sample App'),
+          title: Text('Pin App'),
           backgroundColor: Colors.green[700],
         ),
+
         body: GoogleMap(
           onMapCreated: _onMapCreated,
           initialCameraPosition: CameraPosition(
@@ -48,7 +53,52 @@ class _MyAppState extends State<MyApp> {
             zoom: 11.0,
           ),
         ),
+        
+
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => {_count++, print('Button pressed $_count')},
+          tooltip: 'Drop pin',
+          child: const Icon(Icons.add),
+        ),
+
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              Container(
+                height: 80.0,
+                child:DrawerHeader(
+                  child: Text('Options',),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                  ),
+                  // margin: EdgeInsets.all(0),
+                ),
+              ),
+              
+              ListTile(
+                title: Text('Select Categories'),
+                onTap: () {
+                  // Close drawer
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Top Pins'),
+                onTap: () {
+
+                  Navigator.pop(context);
+                },
+              )
+            ]
+          )
+        ),
+
       ),
     );
   }
 }
+
+ class AppState {
+
+  }
