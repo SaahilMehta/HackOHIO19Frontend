@@ -30,6 +30,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool userSelectingPosition = false;
   AppState appState = AppState();
   GoogleMapController mapController;
   final LatLng _center = const LatLng(45.521563, -122.677433);
@@ -39,10 +40,9 @@ class _MyAppState extends State<MyApp> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-   
   }
 
-  void _addMarker() {
+  void _addMarker(LatLng location) {
     final int markerCount = markers.length;
     final String idValue = 'marker_id_$idCounter';
     idCounter++;
@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
 
     final Marker marker = Marker(
       markerId: markerId,
-      position: _center, //fix me
+      position: location, //fix me
       infoWindow: InfoWindow(title: "placeholder"),
       //add functions to drag/tap/whatever here
     );
@@ -58,6 +58,9 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       markers[markerId] = marker;
     });
+  
+    print("Pin added to map at $location");
+
   }
   
   void _deleteMarker() {
@@ -66,6 +69,13 @@ class _MyAppState extends State<MyApp> {
         markers.remove(currentMarker);
       }
     });
+  }
+
+    void _determineTapPosition(LatLng argument) {
+      if(userSelectingPosition) {
+        _addMarker(argument);
+        userSelectingPosition = false;
+      }
   }
 
 //    mapController.addMarker(
@@ -85,28 +95,35 @@ class _MyAppState extends State<MyApp> {
     );
     return MaterialApp(
       home: Scaffold(
+
         appBar: AppBar(
           title: Text('Pin App'),
           backgroundColor: Colors.green[700],
         ),
+
         body: Stack(
           children: [
             GoogleMap(
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: _center,
-              zoom: 11.0,
-            ),
-            markers: Set<Marker>.of(markers.values),
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: _center,
+               zoom: 11.0,
+              ),
+              markers: Set<Marker>.of(markers.values),
+              onTap: _determineTapPosition,
+              ),
+            ]
           ),
-        ]
-        ),
+
         floatingActionButton: FloatingActionButton(
-          onPressed: _addMarker,
+          onPressed: () {
+            print('Press the screen to select a location');
+            userSelectingPosition = true;
+            },
           tooltip: 'Drop pin',
           child: const Icon(Icons.add),
         ),
-
+            
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -117,32 +134,36 @@ class _MyAppState extends State<MyApp> {
                   child: Text('Options',),
                   decoration: BoxDecoration(
                     color: Colors.blue,
+                    ),
+                                // margin: EdgeInsets.all(0),
                   ),
-                  // margin: EdgeInsets.all(0),
                 ),
-              ),
-              
+                          
               ListTile(
                 title: Text('Select Categories'),
                 onTap: () {
                   // Close drawer
                   Navigator.pop(context);
-                },
-              ),
+                  },
+                ),
+
               ListTile(
                 title: Text('Top Pins'),
                 onTap: () {
-
                   Navigator.pop(context);
-                },
-              )
-            ]
-          )
+                  },
+                )
+              ]
+            )
+          ),
         ),
-      ),
-    );
-  }
+      );
+    }
+            
+
 }
+
+
 
  class AppState {
 
