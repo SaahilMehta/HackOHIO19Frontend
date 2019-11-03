@@ -32,7 +32,7 @@ class MyHomePage extends State<MyHome> {
     var res = http
         .get(uri)
         .then((res) => Pins.fromJson(json.decode(res.body)).pins.forEach(
-          (pin) => _putMarker(LatLng(pin.latitude, pin.longitude), pin.title)));
+          (pin) => _putMarker(LatLng(pin.latitude, pin.longitude), pin.title, pin.description)));
   }
 
   void _onMarkerTap(MarkerId mid) {
@@ -40,7 +40,7 @@ class MyHomePage extends State<MyHome> {
   }
 
   void _addMarker(LatLng location, List<String> pinData) async {
-    _putMarker(location, pinData[0]);
+    _putMarker(location, pinData[0], pinData[2]);
 
     String latitude = pinData[3]
         .substring(pinData[3].indexOf('(') + 1, pinData[3].indexOf(','));
@@ -67,7 +67,7 @@ class MyHomePage extends State<MyHome> {
     print("$pinData");
   }
 
-  void _putMarker(LatLng location, String title) async {
+  void _putMarker(LatLng location, String title, String desc) async {
     final int markerCount = markers.length;
     idCounter++;
     final MarkerId markerId = MarkerId(title);
@@ -75,7 +75,7 @@ class MyHomePage extends State<MyHome> {
     final Marker marker = Marker(
       markerId: markerId,
       position: location,
-      infoWindow: InfoWindow(title: title),
+      infoWindow: InfoWindow(title: title, snippet: desc),
       onTap: () {
         _onMarkerTap(markerId);
       },
