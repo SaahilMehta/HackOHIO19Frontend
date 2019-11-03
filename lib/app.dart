@@ -39,7 +39,7 @@ class MyHomePage extends State<MyHome> {
           (pin) => _putMarker(LatLng(pin.latitude, pin.longitude), pin.title)));
   }
 
-  void _onMarkerTap(MarkerId mid) {
+  void _onMarkerTap(MarkerId mid, LatLng location) {
     final Marker tapped = markers[mid];
     if (tapped == null) return;
     setState(() {
@@ -50,10 +50,15 @@ class MyHomePage extends State<MyHome> {
       }
       currentMarker = mid;
       final Marker newMarker = tapped.copyWith(iconParam:
-      BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue,
+      BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta,
       ));
       markers[mid] = newMarker;
     });
+    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: location,
+      zoom: 15.0,
+    )));
+//    Navigator.push(context, MaterialPageRoute(builder: (context) => PinInfo()));
   }
 
   void _addMarker(LatLng location, List<String> pinData) async {
@@ -88,20 +93,22 @@ class MyHomePage extends State<MyHome> {
     final int markerCount = markers.length;
     idCounter++;
     final MarkerId markerId = MarkerId(title);
+    var description = "test description here";
 
     final Marker marker = Marker(
       markerId: markerId,
       position: location,
-      infoWindow: InfoWindow(title: idValue),
+      infoWindow: InfoWindow(title: "marker $markerCount", snippet: description),
       onTap: () {
-        _onMarkerTap(markerId);
+        _onMarkerTap(markerId, location);
       },
       //add functions to drag/tap/whatever here
     );
 
     setState(() {
       markers[markerId] = marker;
-    });
+      _onMarkerTap(markerId, location);
+    });  
 
     print("Pin added to map at $location");
   }
