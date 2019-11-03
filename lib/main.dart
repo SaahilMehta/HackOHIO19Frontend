@@ -25,11 +25,25 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
+  MyAppPage createState() => MyAppPage();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppPage extends State<MyApp> {
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+    title: 'Pin App',
+    home: MyHome(),
+   );
+  }
+}
+
+class MyHome extends StatefulWidget {
+  MyHomePage createState() => MyHomePage();
+}
+
+class MyHomePage extends State<MyHome> {
   bool userSelectingPosition = false;
   AppState appState = AppState();
   GoogleMapController mapController;
@@ -96,14 +110,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     
-    Widget thumbTack = IconButton(
-      // Use the FontAwesomeIcons class for the IconData
-        icon: Icon(FontAwesomeIcons.mapPin),
-        onPressed: () { print("Pressed"); }
-    );
-    return MaterialApp(
-      home: Scaffold(
-
+    // Widget thumbTack = IconButton(
+    //   // Use the FontAwesomeIcons class for the IconData
+    //     icon: Icon(FontAwesomeIcons.mapPin),
+    //     onPressed: () { print("Pressed"); }
+    // );
+    return Scaffold(
         appBar: AppBar(
           title: Text('Pin App'),
           backgroundColor: Colors.green[700],
@@ -160,13 +172,11 @@ class _MyAppState extends State<MyApp> {
           onPressed: () {
             // print('Press the screen to select a location');
             // userSelectingPosition = true;
-            Navigator.of(context).pushNamed("SecondRoute");
+            Navigator.push(context, MaterialPageRoute(builder: (context) => SecondRoute()));
             },
           tooltip: 'Drop pin',
           child: const Icon(Icons.add),
-          ),
-
-        ),
+        )
       );
     }
 }
