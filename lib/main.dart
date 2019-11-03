@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'app.dart';
 
 void main() => runApp(MyApp());
@@ -28,14 +24,11 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppPage extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-    title: 'Pin App',
-    home: MyHome(),
-   );
+      title: 'Pin App',
+      home: MyHome(),
+    );
   }
 }
-
-
