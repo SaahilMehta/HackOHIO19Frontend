@@ -4,26 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// class SecondRoute extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     print("Second Route");
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Second Route"),
-//       ),
-//       body: Center(
-//         child: RaisedButton(
-//           onPressed: () {
-//             Navigator.pop(context);
-//           },
-//           child: Text('Go back!'),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 class PinTextInput extends StatefulWidget {
 
   final LatLng coords;
@@ -33,16 +13,19 @@ class PinTextInput extends StatefulWidget {
   }
 
   @override
-  PinTextInputState createState() => new PinTextInputState(); 
+  PinTextInputState createState() => new PinTextInputState(this.coords); 
 }
 
 class PinTextInputState extends State<PinTextInput> {
+  final LatLng coords;
+
+  PinTextInputState(this.coords);
 
   TextEditingController titleController = new TextEditingController();
   TextEditingController categoryController = new TextEditingController();
   TextEditingController descriptionController = new TextEditingController();
 
-  List<String> pinInfo = new List(3);
+  List<String> pinInfo = new List(5);
 
   @override
   void dispose() {
@@ -62,9 +45,10 @@ class PinTextInputState extends State<PinTextInput> {
             decoration: new InputDecoration(
               hintText: "Pin Title"
             ), 
-            onSubmitted: (String str) {
+            onChanged: (String str) {
               setState(() {
-                pinInfo[0] = str; 
+                pinInfo[0] = str;
+                // print("PRINT PIN1 $str\n"); 
               });
             },
             controller: titleController,
@@ -73,9 +57,10 @@ class PinTextInputState extends State<PinTextInput> {
             decoration: new InputDecoration(
               hintText: "Pin Category"
             ), 
-            onSubmitted: (String str) {
+            onChanged: (String str) {
               setState(() {
                 pinInfo[1] = str; 
+                // print("PRINT PIN1 $str\n");
               });
             },
             controller: categoryController,
@@ -84,9 +69,10 @@ class PinTextInputState extends State<PinTextInput> {
             decoration: new InputDecoration(
               hintText: "Pin Descrption"
             ), 
-            onSubmitted: (String str) {
+            onChanged: (String str) {
               setState(() {
-                pinInfo[3] = str; 
+                pinInfo[2] = str; 
+                // print("PRINT PIN1 $str\n");
               });
             },
             controller: descriptionController,
@@ -95,7 +81,10 @@ class PinTextInputState extends State<PinTextInput> {
           new RaisedButton(
             child: new Text("Save Pin"),
             onPressed: () {
-              Navigator.pop(context);
+              pinInfo[3] = this.coords.toString();
+              print("PRINT LAT-LONG $pinInfo[3]\n");
+              pinInfo[4] = DateTime.now().toString();
+              Navigator.pop(context, pinInfo);
             }
           )
         ],

@@ -1,9 +1,11 @@
+import 'dart:core';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'input.dart';
+import 'package:http/http.dart' as http;
 
 class MyHome extends StatefulWidget {
   MyHomePage createState() => MyHomePage();
@@ -27,7 +29,7 @@ class MyHomePage extends State<MyHome> {
     print("MARKER $mid TAPPED");
   }
 
-  void _addMarker(LatLng location) {
+  void _addMarker(LatLng location, List<String> pinData) async {
     final int markerCount = markers.length;
     final String idValue = 'marker_id_$idCounter';
     idCounter++;
@@ -36,7 +38,7 @@ class MyHomePage extends State<MyHome> {
     final Marker marker = Marker(
       markerId: markerId,
       position: location, //fix me
-      infoWindow: InfoWindow(title: idValue),
+      infoWindow: InfoWindow(title: pinData[0]),
       onTap: () {
         _onMarkerTap(markerId);
       },
@@ -49,6 +51,27 @@ class MyHomePage extends State<MyHome> {
 
     print("Pin added to map at $location");
 
+
+    String latitude = pinData[3].substring(pinData[3].indexOf('(') + 1, pinData[3].indexOf(','));
+    String longitude = pinData[3].substring(pinData[3].indexOf(" ") + 1, pinData[3].indexOf(')'));
+
+    // print("$pinData[3]");
+    // print("$latitude, $longitude");
+
+
+    // HTTP POST to backend
+    var url = "http://8fd924eb.ngrok.io/pins";
+    var response = await http.post(url, body: {
+      'title': pinData[0],
+      'tags': pinData[1],
+      'description': pinData[2],
+      'latitude': latitude,
+      'longitude': longitude,
+      'datetime_posted': pinData[4],
+    });
+
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
   }
   
   void _deleteMarker() {
@@ -59,11 +82,17 @@ class MyHomePage extends State<MyHome> {
     });
   }
 
-    void _determineTapPosition(LatLng argument) {
+    _determineTapPosition(LatLng argument) async{
       if(userSelectingPosition) {
-        //  _addMarker(argument);
         userSelectingPosition = false;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => PinTextInput(argument)));
+        final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => PinTextInput(argument)));
+        _addMarker(argument, result);
+
+        // print('DEBUG------');
+        // for (var i = 0; i < result.length; i++) {
+        //   print("$result[i]\n");
+        // }
+
       }
   }
 
