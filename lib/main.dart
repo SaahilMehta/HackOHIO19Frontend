@@ -42,6 +42,10 @@ class _MyAppState extends State<MyApp> {
     mapController = controller;
   }
 
+  void _onMarkerTap(MarkerId mid) {
+    print("MARKER $mid TAPPED");
+  }
+
   void _addMarker(LatLng location) {
     final int markerCount = markers.length;
     final String idValue = 'marker_id_$idCounter';
@@ -51,16 +55,18 @@ class _MyAppState extends State<MyApp> {
     final Marker marker = Marker(
       markerId: markerId,
       position: location, //fix me
-      infoWindow: InfoWindow(title: "placeholder"),
+      infoWindow: InfoWindow(title: idValue),
+      onTap: () {
+        _onMarkerTap(markerId);
+      },
       //add functions to drag/tap/whatever here
     );
 
     setState(() {
       markers[markerId] = marker;
-    });
-  
-    print("Pin added to map at $location");
+    });  
 
+    print("Pin added to map at $location");
   }
   
   void _deleteMarker() {
@@ -102,7 +108,7 @@ class _MyAppState extends State<MyApp> {
         ),
 
         body: Stack(
-          children: [
+          children: [                     
             GoogleMap(
               onMapCreated: _onMapCreated,
               initialCameraPosition: CameraPosition(
@@ -111,19 +117,11 @@ class _MyAppState extends State<MyApp> {
               ),
               markers: Set<Marker>.of(markers.values),
               onTap: _determineTapPosition,
+              
               ),
-            ]
+            ]           
           ),
 
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            print('Press the screen to select a location');
-            userSelectingPosition = true;
-            },
-          tooltip: 'Drop pin',
-          child: const Icon(Icons.add),
-        ),
-            
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -156,6 +154,16 @@ class _MyAppState extends State<MyApp> {
               ]
             )
           ),
+
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            print('Press the screen to select a location');
+            userSelectingPosition = true;
+            },
+          tooltip: 'Drop pin',
+          child: const Icon(Icons.add),
+          ),
+
         ),
       );
     }
