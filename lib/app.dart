@@ -32,7 +32,7 @@ class MyHomePage extends State<MyHome> {
     var res = http
         .get(uri)
         .then((res) => Pins.fromJson(json.decode(res.body)).pins.forEach(
-          (pin) => _putMarker(LatLng(pin.latitude as double, pin.longitude as double), pin.title)));
+          (pin) => _putMarker(LatLng(pin.latitude, pin.longitude), pin.title)));
   }
 
   void _onMarkerTap(MarkerId mid) {
@@ -41,6 +41,7 @@ class MyHomePage extends State<MyHome> {
 
   void _addMarker(LatLng location, List<String> pinData) async {
     _putMarker(location, pinData[0]);
+
     String latitude = pinData[3]
         .substring(pinData[3].indexOf('(') + 1, pinData[3].indexOf(','));
     String longitude = pinData[3]
@@ -51,17 +52,19 @@ class MyHomePage extends State<MyHome> {
 
     // HTTP POST to backend
     var url = "http://8fd924eb.ngrok.io/pins";
-    var response = await http.post(url, body: {
+    var response = await http.post(url, headers:{"Content-Type":"application/json"} ,body: utf8.encode(json.encode({
       'title': pinData[0],
 //      'tags': pinData[1],
       'description': pinData[2],
-      'latitude': latitude,
-      'longitude': longitude,
-      'datetime_posted': pinData[4],
-    });
+      'latitude': location.latitude,
+      'longitude': location.longitude,
+      // 'datetime_posted': pinData[4],
+    })));
 
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
+
+    print("$pinData");
   }
 
   void _putMarker(LatLng location, String title) async {

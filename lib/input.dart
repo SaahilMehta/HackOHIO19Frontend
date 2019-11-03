@@ -82,7 +82,7 @@ class PinTextInputState extends State<PinTextInput> {
             child: new Text("Save Pin"),
             onPressed: () {
               pinInfo[3] = this.coords.toString();
-              print("PRINT LAT-LONG $pinInfo[3]\n");
+              // print("PRINT LAT-LONG $pinInfo[3]\n");
               pinInfo[4] = DateTime.now().toString();
               Navigator.pop(context, pinInfo);
             }
