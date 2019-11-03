@@ -1,12 +1,16 @@
 import 'dart:convert';
 import 'dart:core';
+import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix0;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 import 'input.dart';
 import 'pin.dart';
+import 'package:http/http.dart' as http;
 
 class MyHome extends StatefulWidget {
   MyHomePage createState() => MyHomePage();
@@ -36,7 +40,20 @@ class MyHomePage extends State<MyHome> {
   }
 
   void _onMarkerTap(MarkerId mid) {
-    print("MARKER $mid TAPPED");
+    final Marker tapped = markers[mid];
+    if (tapped == null) return;
+    setState(() {
+      if (markers.containsKey(currentMarker)) {
+        final Marker resetMarker = markers[currentMarker].copyWith(iconParam:
+        BitmapDescriptor.defaultMarker);
+        markers[currentMarker] = resetMarker;
+      }
+      currentMarker = mid;
+      final Marker newMarker = tapped.copyWith(iconParam:
+      BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue,
+      ));
+      markers[mid] = newMarker;
+    });
   }
 
   void _addMarker(LatLng location, List<String> pinData) async {
@@ -75,7 +92,7 @@ class MyHomePage extends State<MyHome> {
     final Marker marker = Marker(
       markerId: markerId,
       position: location,
-      infoWindow: InfoWindow(title: title),
+      infoWindow: InfoWindow(title: idValue),
       onTap: () {
         _onMarkerTap(markerId);
       },
