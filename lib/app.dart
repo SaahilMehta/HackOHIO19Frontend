@@ -94,10 +94,15 @@ class MyHomePage extends State<MyHome> {
     final MarkerId markerId = MarkerId(title);
     var description = "test description here";
 
+    // Fill in points from API response
+    String uri = url + "/pins/$markerId";
+    final res = await http.get(uri);
+    var pin = Pin.fromJson(json.decode(res.body));
+
     final Marker marker = Marker(
       markerId: markerId,
       position: location,
-      infoWindow: InfoWindow(title: "marker $markerCount", snippet: description),
+      infoWindow: InfoWindow(title: pin.title, snippet: pin.description),
       onTap: () {
         _onMarkerTap(markerId, location);
       },
