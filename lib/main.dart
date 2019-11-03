@@ -67,6 +67,7 @@ class _MyAppState extends State<MyApp> {
     });  
 
     print("Pin added to map at $location");
+
   }
   
   void _deleteMarker() {
@@ -94,6 +95,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    
     Widget thumbTack = IconButton(
       // Use the FontAwesomeIcons class for the IconData
         icon: Icon(FontAwesomeIcons.mapPin),
@@ -116,8 +118,7 @@ class _MyAppState extends State<MyApp> {
                zoom: 11.0,
               ),
               markers: Set<Marker>.of(markers.values),
-              onTap: _determineTapPosition,
-              
+              onTap: _determineTapPosition,              
               ),
             ]           
           ),
@@ -141,14 +142,14 @@ class _MyAppState extends State<MyApp> {
                 title: Text('Select Categories'),
                 onTap: () {
                   // Close drawer
-                  Navigator.pop(context);
+                  // Navigator.pop(context);
                   },
                 ),
 
               ListTile(
                 title: Text('Top Pins'),
                 onTap: () {
-                  Navigator.pop(context);
+                  // Navigator.pop(context);
                   },
                 )
               ]
@@ -157,8 +158,9 @@ class _MyAppState extends State<MyApp> {
 
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            print('Press the screen to select a location');
-            userSelectingPosition = true;
+            // print('Press the screen to select a location');
+            // userSelectingPosition = true;
+            Navigator.of(context).pushNamed("SecondRoute");
             },
           tooltip: 'Drop pin',
           child: const Icon(Icons.add),
@@ -167,11 +169,27 @@ class _MyAppState extends State<MyApp> {
         ),
       );
     }
-            
-
 }
 
-
+class SecondRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    print("Second Route");
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Second Route"),
+      ),
+      body: Center(
+        child: RaisedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('Go back!'),
+        ),
+      ),
+    );
+  }
+}
 
  class AppState {
 
