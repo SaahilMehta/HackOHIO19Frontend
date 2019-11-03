@@ -58,7 +58,6 @@ class MyHomePage extends State<MyHome> {
       target: location,
       zoom: 15.0,
     )));
-//    Navigator.push(context, MaterialPageRoute(builder: (context) => PinInfo()));
   }
 
   void _addMarker(LatLng location, List<String> pinData) async {
