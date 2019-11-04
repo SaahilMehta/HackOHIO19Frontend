@@ -16,11 +16,11 @@ class MyHomePage extends State<MyHome> {
   bool userSelectingPosition = false;
   // AppState appState = AppState();
   GoogleMapController mapController;
-  final LatLng _center = const LatLng(45.521563, -122.677433);
+  final LatLng _center = const LatLng(39.961178, -82.998795);
   Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
   MarkerId currentMarker;
   int idCounter = 1;
-  String url = "http://8fd924eb.ngrok.io";
+  String url = "http://57c2619e.ngrok.io";
   Future<Pins> pins;
 
   void _onMapCreated(GoogleMapController controller) {
@@ -35,9 +35,34 @@ class MyHomePage extends State<MyHome> {
           (pin) => _putMarker(LatLng(pin.latitude, pin.longitude), pin.title, pin.description)));
   }
 
-  void _onMarkerTap(MarkerId mid) {
-    print("MARKER $mid TAPPED");
-  }
+  // void _onMarkerTap(MarkerId mid, LatLng location) {
+  //   print("MARKER $mid TAPPED");
+  //   mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+  //    target: location,
+  //    zoom: 15.0,
+  //   )));
+  // }
+  void _onMarkerTap(MarkerId mid, LatLng location) {
+   final Marker tapped = markers[mid];
+   if (tapped == null) return;
+   setState(() {
+     if (markers.containsKey(currentMarker)) {
+       final Marker resetMarker = markers[currentMarker].copyWith(iconParam:
+       BitmapDescriptor.defaultMarker);
+       markers[currentMarker] = resetMarker;
+     }
+     currentMarker = mid;
+     final Marker newMarker = tapped.copyWith(iconParam:
+     BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta,
+     ));
+     markers[mid] = newMarker;
+   });
+  //  showVoting = true;
+   mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+     target: location,
+     zoom: 15.0,
+   )));
+ }
 
   void _addMarker(LatLng location, List<String> pinData) async {
     _putMarker(location, pinData[0], pinData[2]);
@@ -51,7 +76,7 @@ class MyHomePage extends State<MyHome> {
     // print("$latitude, $longitude");
 
     // HTTP POST to backend
-    var url = "http://8fd924eb.ngrok.io/pins";
+    var url = "http://57c2619e.ngrok.io";
     var response = await http.post(url, headers:{"Content-Type":"application/json"} ,body: utf8.encode(json.encode({
       'title': pinData[0],
 //      'tags': pinData[1],
@@ -77,7 +102,7 @@ class MyHomePage extends State<MyHome> {
       position: location,
       infoWindow: InfoWindow(title: title, snippet: desc),
       onTap: () {
-        _onMarkerTap(markerId);
+        _onMarkerTap(markerId, location);
       },
       //add functions to drag/tap/whatever here
     );
@@ -109,8 +134,20 @@ class MyHomePage extends State<MyHome> {
       //   print("$result[i]\n");
       // }
 
+    } else {
+      _resetGlobals();
     }
   }
+
+  void _resetGlobals() {
+   setState(() {
+     if (markers.containsKey(currentMarker)) {
+       final Marker resetMarker = markers[currentMarker].copyWith(iconParam:
+       BitmapDescriptor.defaultMarker);
+       markers[currentMarker] = resetMarker;
+     }
+   });
+ }
 
 //    mapController.addMarker(
 //      MarkerOptions(
